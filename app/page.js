@@ -1,16 +1,27 @@
 "use client";
 
-import { Button, Table } from "antd";
+import { Button, Table, message } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { getBookings } from "@/services/bookingService";
-import { useQuery } from "@tanstack/react-query";
+import { getBookings, deleteBooking } from "@/services/bookingService";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 export default function Home() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['bookings'],
     queryFn: getBookings
   });
+
+  const { mutate: removeBooking } = useMutation({
+    mutationFn: deleteBooking,
+    onSuccess: () => {
+      message.success("Booking deleted successfully");
+      refetch();
+    },
+    onError: (error) => {
+      message.error("Unable to delete booking");
+    }
+  })
 
   const columns = [
     {
@@ -48,14 +59,14 @@ export default function Home() {
       render: (record) =>
         <div className="flex">
           <Button icon={<EditOutlined />} className="mr-2" />
-          <Button icon={<DeleteOutlined />} danger/>
+          <Button icon={<DeleteOutlined />} danger onClick={() => removeBooking(record?.id)}/>
         </div>
     }
   ];
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-4">
         <Button type="primary">Add New Booking</Button>
       </div>
       <Table columns={columns} dataSource={data} isLoading={isLoading}/>
