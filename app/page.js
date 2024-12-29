@@ -29,6 +29,12 @@ export default function Home() {
 
   const columns = [
     {
+      title: "Booking ID",
+      key: "id",
+      dataIndex: "id"
+
+  },
+    {
       title: "Customer",
       key: "customer",
       render: (record) => `${record?.customer?.firstName} ${record?.customer?.lastName}`
