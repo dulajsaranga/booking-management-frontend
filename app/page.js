@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { Button, Table, message } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { getBookings, deleteBooking } from "@/services/bookingService";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import AddBookingModal from "./components/AddBookingModal";
 import dayjs from "dayjs";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['bookings'],
     queryFn: getBookings
@@ -21,7 +25,7 @@ export default function Home() {
     onError: (error) => {
       message.error("Unable to delete booking");
     }
-  })
+  });
 
   const columns = [
     {
@@ -64,12 +68,17 @@ export default function Home() {
     }
   ];
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  }
+
   return (
     <div>
       <div className="flex justify-end mb-4">
-        <Button type="primary">Add New Booking</Button>
+        <Button type="primary" onClick={() => setIsModalOpen(true)}>Add New Booking</Button>
       </div>
       <Table columns={columns} dataSource={data} isLoading={isLoading}/>
+      <AddBookingModal open={isModalOpen} onCancel={handleModalClose}/>
     </div>
   );
 }
