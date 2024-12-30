@@ -27,7 +27,7 @@ const AppLayout = ({ children }) => {
           alignItems: 'center',
         }}
       >
-        <div className="demo-logo" />
+        <div className='text-lg text-white mr-5'>Booking Management System</div>
         <Menu
           theme="dark"
           mode="horizontal"
